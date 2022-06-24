@@ -615,7 +615,7 @@ CCharacter *CPlayer::ForceSpawn(vec2 Pos)
 
 void CPlayer::SetTeam(int Team, bool DoChatMsg)
 {
-	KillCharacter();
+	// KillCharacter();
 
 	m_Team = Team;
 	m_LastSetTeam = Server()->Tick();
@@ -629,15 +629,15 @@ void CPlayer::SetTeam(int Team, bool DoChatMsg)
 	Msg.m_CooldownTick = m_LastSetTeam + Server()->TickSpeed() * g_Config.m_SvTeamChangeDelay;
 	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, -1);
 
-	if(Team == TEAM_SPECTATORS)
-	{
-		// update spectator modes
-		for(auto &pPlayer : GameServer()->m_apPlayers)
-		{
-			if(pPlayer && pPlayer->m_SpectatorID == m_ClientID)
-				pPlayer->m_SpectatorID = SPEC_FREEVIEW;
-		}
-	}
+	// if(Team == TEAM_SPECTATORS)
+	// {
+	// 	// update spectator modes
+	// 	for(auto &pPlayer : GameServer()->m_apPlayers)
+	// 	{
+	// 		if(pPlayer && pPlayer->m_SpectatorID == m_ClientID)
+	// 			pPlayer->m_SpectatorID = SPEC_FREEVIEW;
+	// 	}
+	// }
 }
 
 bool CPlayer::SetTimerType(int TimerType)

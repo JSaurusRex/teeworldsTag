@@ -113,6 +113,8 @@ public:
 		int m_Max;
 	} m_Latency;
 
+	int m_Team;
+
 private:
 	CCharacter *m_pCharacter;
 	int m_NumInputs;
@@ -125,7 +127,6 @@ private:
 	bool m_Spawning;
 	bool m_WeakHookSpawn;
 	int m_ClientID;
-	int m_Team;
 
 	int m_Paused;
 	int64_t m_ForcePauseTime;

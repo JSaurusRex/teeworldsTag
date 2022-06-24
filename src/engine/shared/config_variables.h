@@ -164,6 +164,7 @@ MACRO_CONFIG_INT(SvDnsblChat, sv_dnsbl_chat, 0, 0, 1, CFGFLAG_SERVER, "Don't all
 MACRO_CONFIG_INT(SvRconVote, sv_rcon_vote, 0, 0, 1, CFGFLAG_SERVER, "Only allow authed clients to call votes")
 
 MACRO_CONFIG_INT(SvScorelimit, sv_scorelimit, 20, 0, 1000, CFGFLAG_SERVER, "Score limit (0 disables)")
+MACRO_CONFIG_INT(SvTaggers, sv_taggers, 1, 1, 63, CFGFLAG_SERVER, "amount of players who are it")
 MACRO_CONFIG_INT(SvTimelimit, sv_timelimit, 0, 0, 1000, CFGFLAG_SERVER, "Time limit in minutes (0 disables)")
 MACRO_CONFIG_STR(SvGametype, sv_gametype, 32, "ictf", CFGFLAG_SERVER, "Game type (dm, tdm, ctf, idm, itdm, ictf, ifreeze, gdm, gtdm, gctf)")
 MACRO_CONFIG_INT(SvStopGoFeature, sv_stopgo_feature, 1, 0, 1, CFGFLAG_SERVER, "Enable stop/go-feature in chat")
