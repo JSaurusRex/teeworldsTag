@@ -438,6 +438,7 @@ void IGameController::OnPlayerDisconnect(class CPlayer *pPlayer, const char *pRe
 		GameServer()->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "game", aBuf);
 	}
 }
+#include <stdlib.h> 
 
 void IGameController::EndRound()
 {
@@ -447,6 +448,29 @@ void IGameController::EndRound()
 	GameServer()->m_World.m_Paused = true;
 	m_GameOverTick = Server()->Tick();
 	m_SuddenDeath = 0;
+	//randomize teams
+	//first make everybody blue
+	for(int i = 0; i < MAX_CLIENTS; i++)
+	{
+		if(!Server()->PlayerExists(i))
+			continue;
+		GameServer()->m_apPlayers[i]->SetTeam(TEAM_BLUE);
+	}
+	for(int i = 0; i < g_Config.m_SvTaggers; i++)
+	{
+		int randomNum = rand() % MAX_CLIENTS;
+		if(!Server()->PlayerExists(randomNum))
+		{
+			i--;
+			continue;
+		}
+		if(GameServer()->m_apPlayers[randomNum]->m_Team == TEAM_RED)
+		{
+			i--;
+			continue;
+		}
+		GameServer()->m_apPlayers[randomNum]->SetTeam(TEAM_RED);
+	}
 }
 
 void IGameController::ResetGame()

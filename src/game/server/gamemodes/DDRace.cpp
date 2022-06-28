@@ -261,21 +261,28 @@ void CGameControllerDDRace::Tick()
 
 	// if(Server()->IsSixup(0))
 	// 	GameServer()->SendGameMsg(protocol7::GAMEMSG_CTF_GRAB, 0, -1);
+	int closestTime = 0;
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(GameServer()->PlayerExists(i) && GameServer()->m_apPlayers[i]->m_Team == TEAM_RED && GameServer()->GetPlayerChar(i))
 		{
 			int player = GameServer()->GetPlayerChar(i)->GetCore().m_HookedPlayer;
 			GameServer()->m_apPlayers[i]->m_Score += (Server()->Tick() % 50 == 0);
-			if(player != -1)
+			if(GameServer()->m_apPlayers[i]->m_Score > closestTime)
+				closestTime = GameServer()->m_apPlayers[i]->m_Score;
+			if(player != -1 && GameServer()->m_apPlayers[player]->m_Team == TEAM_BLUE)
 			{
 				GameServer()->GetPlayerChar(player)->GetPlayer()->SetTeam(TEAM_RED);
+				GameServer()->m_apPlayers[player]->m_Score += 5;
 				GameServer()->GetPlayerChar(i)->GetPlayer()->SetTeam(TEAM_BLUE);
 			}
-
-			
 		}
 	}
+	char abuff[5];
+	int timeLeft = g_Config.m_SvScorelimit-closestTime;
+	sprintf(abuff, "%i", timeLeft);
+	if(timeLeft < 10)
+		GameServer()->SendBroadcast(abuff, -1);
 
 	if(m_GameOverTick == -1 && !m_Warmup)
 	{
