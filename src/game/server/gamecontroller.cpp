@@ -452,14 +452,14 @@ void IGameController::EndRound()
 	//first make everybody blue
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		if(!Server()->PlayerExists(i))
+		if(!GameServer()->PlayerExists(i))
 			continue;
 		GameServer()->m_apPlayers[i]->SetTeam(TEAM_BLUE);
 	}
 	for(int i = 0; i < g_Config.m_SvTaggers; i++)
 	{
 		int randomNum = rand() % MAX_CLIENTS;
-		if(!Server()->PlayerExists(randomNum))
+		if(!GameServer()->PlayerExists(randomNum))
 		{
 			i--;
 			continue;
