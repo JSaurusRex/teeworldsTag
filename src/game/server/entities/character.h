@@ -148,7 +148,6 @@ private:
 	} m_Ninja;
 
 	// the player core for the physics
-	CCharacterCore m_Core;
 	CGameTeams *m_pTeams = nullptr;
 
 	std::map<int, std::vector<vec2>> *m_pTeleOuts = nullptr;
@@ -181,6 +180,8 @@ private:
 	bool m_Solo;
 
 public:
+	CCharacterCore m_Core;
+
 	CGameTeams *Teams() { return m_pTeams; }
 	void SetTeams(CGameTeams *pTeams);
 	void SetTeleports(std::map<int, std::vector<vec2>> *pTeleOuts, std::map<int, std::vector<vec2>> *pTeleCheckOuts);

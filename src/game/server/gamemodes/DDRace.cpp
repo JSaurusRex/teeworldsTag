@@ -129,6 +129,15 @@ int CGameControllerDDRace::OnCharacterDeath(class CCharacter *pVictim, class CPl
 {
 	IGameController::OnCharacterDeath(pVictim, pKiller, WeaponID);
 	int HadFlag = 0;
+	int taggers = 0;
+	if(pVictim->GetPlayer()->m_Team == TEAM_BLUE)
+	{
+		for(int i = 0; i < MAX_CLIENTS; i++)
+			if(GameServer()->PlayerExists(i) && GameServer()->m_apPlayers[i]->m_Team == TEAM_RED)
+				taggers++;
+		if(taggers < g_Config.m_SvTaggers)
+			pVictim->GetPlayer()->SetTeam(TEAM_RED);
+	}
 
 	// drop flags
 	// for(int i = 0; i < 2; i++)
@@ -264,25 +273,38 @@ void CGameControllerDDRace::Tick()
 	int closestTime = 0;
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		if(GameServer()->PlayerExists(i) && GameServer()->m_apPlayers[i]->m_Team == TEAM_RED && GameServer()->GetPlayerChar(i))
+		if(GameServer()->PlayerExists(i) && GameServer()->m_apPlayers[i]->m_Team == TEAM_RED)
 		{
-			int player = GameServer()->GetPlayerChar(i)->GetCore().m_HookedPlayer;
 			GameServer()->m_apPlayers[i]->m_Score += (Server()->Tick() % 50 == 0);
 			if(GameServer()->m_apPlayers[i]->m_Score > closestTime)
 				closestTime = GameServer()->m_apPlayers[i]->m_Score;
-			if(player != -1 && GameServer()->m_apPlayers[player]->m_Team == TEAM_BLUE)
+			if(GameServer()->GetPlayerChar(i))
 			{
-				GameServer()->GetPlayerChar(player)->GetPlayer()->SetTeam(TEAM_RED);
-				GameServer()->m_apPlayers[player]->m_Score += 5;
-				GameServer()->GetPlayerChar(i)->GetPlayer()->SetTeam(TEAM_BLUE);
+				int player = GameServer()->GetPlayerChar(i)->GetCore().m_HookedPlayer;
+
+				if(player != -1 && GameServer()->m_apPlayers[player]->m_Team == TEAM_BLUE)
+				{
+					GameServer()->GetPlayerChar(player)->GetPlayer()->SetTeam(TEAM_RED);
+					GameServer()->GetPlayerChar(i)->GetPlayer()->SetTeam(TEAM_BLUE);
+					GameServer()->GetPlayerChar(i)->m_Core.m_HookedPlayer = -1;
+
+					char abuff[120];
+					int timeLeft = g_Config.m_SvScorelimit-closestTime;
+					snprintf(abuff, 120, "%s tagged %s", Server()->ClientName(i), Server()->ClientName(player));
+					if(timeLeft < 10 && timeLeft >= 0)
+						GameServer()->SendChat(-1, CGameContext::CHAT_ALL, abuff);
+				}
 			}
 		}
 	}
-	char abuff[5];
-	int timeLeft = g_Config.m_SvScorelimit-closestTime;
-	sprintf(abuff, "%i", timeLeft);
-	if(timeLeft < 10)
-		GameServer()->SendBroadcast(abuff, -1);
+	if(Server()->Tick() % 50 == 0)
+	{
+		char abuff[5];
+		int timeLeft = g_Config.m_SvScorelimit-closestTime;
+		snprintf(abuff, 5, "%i", timeLeft);
+		if(timeLeft < 10 && timeLeft >= 0)
+			GameServer()->SendBroadcast(abuff, -1);
+	}
 
 	if(m_GameOverTick == -1 && !m_Warmup)
 	{

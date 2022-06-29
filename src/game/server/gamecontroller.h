@@ -24,7 +24,7 @@ class IGameController
 	class IServer *m_pServer;
 
 protected:
-	CGameContext *GameServer() const { return m_pGameServer; }
+	CGameContext *GameServer() { return m_pGameServer; }
 	CConfig *Config() { return m_pConfig; }
 	IServer *Server() const { return m_pServer; }
 

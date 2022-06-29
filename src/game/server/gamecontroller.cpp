@@ -528,7 +528,8 @@ void IGameController::OnReset()
 
 bool IGameController::IsTeamplay() const
 {
-	return m_GameFlags&GAMEFLAG_TEAMS;
+	return false;
+	//m_GameFlags&GAMEFLAG_TEAMS;
 }
 
 int IGameController::OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon)
